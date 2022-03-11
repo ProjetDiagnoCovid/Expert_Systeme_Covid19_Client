@@ -6,24 +6,57 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import ma.fstm.ilisi2.ExpertSysCovid19.model.bo.*;
 
 public class HandlerClient {
+	
+	
+	
+	
+	public Diagnostic Traitement(Diagnostic diag) throws IOException, ClassNotFoundException {
+		
+		
+		Socket socket = new Socket("172.17.36.219",2050);
+		System.out.println("Connected!");
+		
+		OutputStream outputs = socket.getOutputStream();
+		
+		ObjectOutputStream objectoutputs = new ObjectOutputStream(outputs);
+	
+       objectoutputs.writeObject(diag);
+		
+		
+		InputStream is=socket.getInputStream();
+		ObjectInputStream ois=new ObjectInputStream(is);
+		
+		diag =  (Diagnostic) ois.readObject();
+		
+		//for(Message m:listOfMessages) {
+			System.out.println("aprés traitement le degré final !! : "+diag.getDegreCont_C19());
+		//}
+		
+		
+		System.out.println("Closing socket and terminating program.");
+		
+		socket.close();
+		return diag;
+		
+	}
 
-	public static void main(String[] args) throws IOException, ClassNotFoundException {
-		Socket socket = new Socket("localhost",2030);
+		/*public static void main(String[] args) throws IOException, ClassNotFoundException {
+	Socket socket = new Socket("localhost",2050);
 		System.out.println("Connected!");
 		
 		OutputStream outputs = socket.getOutputStream();
 		
 		ObjectOutputStream objectoutputs = new ObjectOutputStream(outputs);
 		
-		/***********************************************/
 		
 		Client cl = new Client();
         
-        
+        cl.setNom("Fadwa");
         Diagnostic diag = new Diagnostic(cl);
         
         Etatpandemie etat = new Etatpandemie("faible");
@@ -56,13 +89,11 @@ public class HandlerClient {
          diag.ajouter_symptome(s4);
          diag.ajouter_symptome(s5); 
          
-         diag.setContact_Covid19(true);
+        // diag.setContact_Covid19(true);
          
          cl.ajouter_diagnostic(diag);
          
 		
-		
-		/***********************************************/
 		
 		objectoutputs.writeObject(diag);
 		
@@ -80,6 +111,6 @@ public class HandlerClient {
 		System.out.println("Closing socket and terminating program.");
 		
 		socket.close();
-	}
+	}*/
 
 }
